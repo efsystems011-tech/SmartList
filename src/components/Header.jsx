@@ -7,7 +7,7 @@ function Header() {
                     Olá, bem-vindo! 👋
                 </h2>
 
-                <p>
+                <p className="header-subtitle">
                     Organize suas compras de maneira inteligente.
                 </p>
             </div>

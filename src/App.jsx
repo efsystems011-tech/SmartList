@@ -27,7 +27,7 @@ function App() {
         onNavigate={setActivePage}
       />
 
-    <main>
+    <main className="main-content">
       <Header />
 
       {activePage === "dashboard" ? (
