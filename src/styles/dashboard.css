@@ -511,6 +511,115 @@ shopping-icon {
     margin-bottom: 25px;
 }
 
+/* FORMULÁRIOS */
+.custom-modal {
+    animation: modalEnter 0.25s ease;
+}
+
+@keyframes modalEnter {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.custom-modal .form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 8px;
+}
+
+.custom-modal .form-control,
+.custom-modal .form-select {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.custom-modal .form-control:focus,
+.custom-modal .form-select:focus {
+    border-color: #10b981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+.custom-modal textarea {
+    resize: vertical;
+}
+
+/* CAMPO DE PESQUISA */
+.input-group {
+    max-width: 450px;
+}
+
+.input-group-text {
+    border-radius: 12px 0 0 12px;
+    color: #94a3b8;
+}
+
+.input-group .form-control {
+    border-radius: 0 12px 12px 0;
+    padding: 12px;
+    font-size: 14px;
+}
+
+.input-group .form-control:focus {
+    box-shadow: none;
+    border-color: #dee2e6;
+}
+
+/* ESTADO VAZIO */
+.empty-state {
+    background: white;
+    border: 1px dashed #cbd5e1;
+    border-radius: 18px;
+    text-align: center;
+    padding: 65px 25px;
+}
+
+.empty-state h4 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 20px;
+}
+
+.empty-state p {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+/* DROPDOWN */
+.dropdown-menu {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 8px;
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.dropdown-item {
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+}
+
+.dropdown-item:hover {
+    background: #ecfdf5;
+    color: #059669;
+}
+
+.dropdown-item.text-danger:hover {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
 /* RESPONSIVIDADE */
 @media (max-width: 992px) {
     .sidebar {

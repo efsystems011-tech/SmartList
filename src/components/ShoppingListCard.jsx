@@ -1,4 +1,4 @@
-function ShoppingListCard({ list }) {
+function ShoppingListCard({ list, onEdit, onDelete }) {
 
   const progress =
     list.totalItems > 0
@@ -14,16 +14,52 @@ function ShoppingListCard({ list }) {
           <i className={`bi ${list.icon}`}></i>
         </div>
 
-        <span className="shopping-badge">
-          {list.category}
-        </span>
+        <div className="d-flex align-items-center gap-2">
+          <span className="shopping-badge">
+            {list.category}
+          </span>
+
+          <div className="dropdown">
+            <button
+              type="button"
+              className="btn btn-light btn-sm"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              aria-label={`Opções da lista ${list.name}`}
+            >
+              <i className="bi bi-three-dots-vertical"></i>
+            </button>
+
+            <ul className="dropdown-menu dropdown-menu-end">
+                <li>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => onEdit(list)}
+                  >
+                    <i className="bi bi-pencil me-2"></i>
+                    Editar
+                  </button>
+                </li>
+
+                <li>
+                  <button 
+                    className="dropdown-item text-danger"
+                    onClick={() => onDelete(list.id)}
+                  >
+                      <i className="bi bi-trash me-2"></i>
+                      Excluir
+                  </button>
+                </li>
+            </ul>
+          </div>
+        </div>
 
       </div>
 
       <h5>{list.name}</h5>
 
       <p className="shopping-description">
-        {list.description}
+        {list.description || "Sem descrição"}
       </p>
 
       <div className="shopping-progress-info">

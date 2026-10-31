@@ -1,16 +1,40 @@
-import { useState } from "react"
+import { useState, useEffect, use } from "react"
 
 import Sidebar from "./components/Sidebar"
-
-import "./styles/dashboard.css"
 import Header from "./components/Header"
 import Dashboard from './pages/Dashboard'
+import ListModal from './components/ListModal'
+
+import { initialLists } from "./data/initialLists"
+
+import "./styles/dashboard.css"
+
+ const STORAGE_KEY = "smartlist_lists"
 
 function App() {
 
   const [activePage, setActivePage] = useState("dashboard")
 
-  const [showModal, setShowModal] = useState(false)
+  const [shoppingLists, setShoppingLists] =useState(() => {
+    try {
+      const savedLists = localStorage.getItem(STORAGE_KEY);
+
+      if(savedLists !== null) {
+        const parsedLists = JSON.parse(savedLists);
+
+        if (Array.isArray(parsedLists)) {
+          return parsedLists;
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao carregar listas: ", error);
+    }
+
+    return initialLists;
+  });
+
+  const [showModal, setShowModal] = useState(false);
+  const [editingList, setEditingList] = useState(null);
 
   const pageNames = {
     dashboard: "Dashboard",
@@ -19,6 +43,78 @@ function App() {
     orcamento: "Orçamento",
     configuracoes: "Configurações"
   };
+
+  // SALVAR AUTOMATICAMENTE
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(shoppingLists)
+      );
+    } catch (error) {
+      console.error("Erro ao salvar listas:", error)
+    }
+  }, [shoppingLists]);
+
+  // ABRIR FORMULÁRIO DE CADASTRO
+  function handleNewList() {
+    setEditingList(null);
+    setShowModal(true)
+  }
+
+  // ABRIR FORMULÁRIO DE EDIÇÃO
+  function handleEditList(list) {
+    setEditingList(list);
+    setShowModal(true);
+  }
+
+  // SALVAR LISTA
+  function handleSaveList(listData) {
+    if (editingList) {
+
+      setShoppingLists((previousLists) =>
+        previousLists.map((list) =>
+          list.id === editingList.id
+            ? { ...list, ...listData }
+            : list
+        )
+      );
+    } else {
+      const newList = {
+        id: crypto.randomUUID(),
+        ...listData,
+        totalItems: 0,
+        completedItems: 0,
+        total: 0
+      };
+
+      setShoppingLists((previousLists) => [
+        ...previousLists,
+        newList
+      ]);
+    }
+
+    setShowModal(false);
+    setEditingList(null)
+  }
+
+  // EXCLUIR LISTA
+  function handleDeleteList(id) {
+    const confirmed = window.confirm(
+      "Deseja realmente excluir esta lista?"
+    );
+
+    if(!confirmed)
+      return;
+
+    setShoppingLists((previousList) => previousList.filter((list) => list.id !== id));
+  }
+
+  // FECHAR MODAL
+  function handleCloseModal() {
+    setShowModal(false)
+    setEditingList(null)
+  }
 
   return (
     <div className="app-layout">
@@ -30,10 +126,14 @@ function App() {
     <main className="main-content">
       <Header />
 
-      {activePage === "dashboard" ? (
+      {activePage === "dashboard" ||
+       activePage === "listas" ? (
 
         <Dashboard 
-          onNewList={() => setShowModal(true)}
+          shoppingLists={shoppingLists}
+          onNewList={handleNewList}
+          onEditList={handleEditList}
+          onDeleteList={handleDeleteList}
         />
       ) : (
         <div className="dashboard-content">
@@ -52,44 +152,12 @@ function App() {
     }
     </main>
 
-    {showModal && (
-      <div className="modal-overlay">
-        <div
-          className="custom-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-title"
-        >
-
-          <div className="modal-top">
-            <h4 id="modal-title">
-              Nova Lista
-            </h4>
-
-            <button
-              type="button"
-              onClick={() => setShowModal(false)}
-              aria-label="Fechar"
-            >
-              <i className="bi bi-x-lg"></i>
-            </button>
-          </div>
-
-          <p>
-              Na próxima etapa, vamos criar
-              o formulário para cadastrar listas.
-            </p>
-
-            <button
-              className="btn-new-list w-100"
-              onClick={() => setShowModal(false)}
-            >
-              Entendi
-            </button>
-
-        </div>
-      </div>
-    )}
+    <ListModal
+      isOpen={showModal}
+      onClose={handleCloseModal}
+      onSave={handleSaveList}
+      editingList={editingList}
+    />
 
     </div>
   )

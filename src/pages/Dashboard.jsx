@@ -1,40 +1,17 @@
+import { useState } from "react";
+
 import StatCard from "../components/StatCard";
 import ShoppingListCard from "../components/ShoppingListCard";
 
-function Dashboard({ onNewList }) {
+function Dashboard({ 
+  shoppingLists,
+  onNewList,
+  onEditList,
+  onDeleteList
+ }) {
 
-  const shoppingLists = [
-    {
-      id: 1,
-      name: "Compras do Supermercado",
-      description: "Compras do mês",
-      category: "Mercado",
-      icon: "bi-basket2",
-      totalItems: 20,
-      completedItems: 15,
-      total: 350.90
-    },
-    {
-      id: 2,
-      name: "Farmácia",
-      description: "Medicamentos e higiene",
-      category: "Saúde",
-      icon: "bi-heart-pulse",
-      totalItems: 8,
-      completedItems: 3,
-      total: 120.50
-    },
-    {
-      id: 3,
-      name: "Churrasco",
-      description: "Compras para o final de semana",
-      category: "Eventos",
-      icon: "bi-fire",
-      totalItems: 12,
-      completedItems: 6,
-      total: 280.00
-    }
-  ];
+
+  const [search, setSearch] = useState("");
 
   const totalLists = shoppingLists.length;
 
@@ -48,6 +25,10 @@ function Dashboard({ onNewList }) {
     0
   );
 
+  const filteredLists = shoppingLists.filter((list) =>
+    list.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="dashboard-content">
 
@@ -57,7 +38,7 @@ function Dashboard({ onNewList }) {
           <h3>Visão Geral</h3>
 
           <p>
-            Acompanhe suas listas e organize suas compras.
+            Organize suas compras de maneira inteligente.
           </p>
         </div>
 
@@ -116,7 +97,7 @@ function Dashboard({ onNewList }) {
         <div>
           <h4>Minhas Listas</h4>
 
-          <p>Gerencie suas compras recentes</p>
+          <p>Gerencie suas listas de compras</p>
         </div>
 
         <span className="list-count">
@@ -125,22 +106,51 @@ function Dashboard({ onNewList }) {
 
       </div>
 
-      <div className="row g-4">
+      <div className="mb-4">
 
-        {shoppingLists.map((list) => (
+        <div className="input-group">
+          <span className="input-group-text bg-white border-end-0">
+            <i className="bi bi-search"></i>
+          </span>
 
-          <div
-            className="col-md-6 col-xl-4"
-            key={list.id}
-          >
-
-            <ShoppingListCard list={list} />
-
-          </div>
-
-        ))}
+          <input 
+            type="search"
+            className="form-control border-start-0"
+            placeholder="Pesquisar listas..."
+            aria-label="Pesquisar listas"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
 
       </div>
+
+      {filteredLists.length === 0 ? (
+        <div className="empty-state">
+          <i className="bi bi-basket"></i>
+
+          <h4>Nenhuma lista encontrada</h4>
+
+          <p>Crie uma nova lista ou altere sua pesquisa.</p>
+
+        </div>
+      ) : (
+
+        <div className="row g-4">
+            {filteredLists.map((list) => (
+              <div
+                className="col-md-6 col-xl-4"
+                key={list.id}
+              >
+                <ShoppingListCard
+                  list={list}
+                  onEdit={onEditList}
+                  onDelete={onDeleteList}
+                />
+              </div>
+            ))}
+        </div>
+      )}
 
     </div>
   );
